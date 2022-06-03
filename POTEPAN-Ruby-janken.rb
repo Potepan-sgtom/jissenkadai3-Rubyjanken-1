@@ -1,78 +1,82 @@
-  require "csv"
-  puts "今からじゃんけんをしましょう。"
-  puts "------------------------------"
+#宣言→繰り返し処理→じゃんけん→あっち向いてホイ
+#while文で繰り返し処理
 
-#じゃんけん
-def janken
-  puts "最初はグー！！じゃ〜け〜ん・・・"
-  puts "[0]グー [1]チョキ [2]パー"
-  
-  number = gets.to_i
-  computer = rand(3)
-  
-  janken = ["グー","チョキ","パー"]
-    puts "自分:#{janken[number]} 相手:#{janken[computer]}"
-  
-  if number == computer
-      puts "あいこで・・・しょ！！"
-      
-      
-  elsif number == 0 && computer == 1 ||
-      number == 1 && computer == 2 ||
-      number == 2 && computer == 0
-      puts "勝利！！　あっちむいて〜・・・ホイ！！"
-  
-  else 
-      puts "負け〜 あっちむいて〜・・・ホイ！！"
-  end
-  
+require "csv"
+  puts "これからあっち向いてホイを行います"
+  puts "----------------------------------"
+
+#じゃんけんとあっち向いてホイの繰り返し処理と最終的な勝敗判定を定義しておく
+def all_game 
+ while !janken_rule()
+ end
 end
-  
-#最初のじゃんけんで勝敗が決している場合あっち向いてホイ
-def acchimuitehoi
- puts "[0]上 [1]下 [2]左 [3]右"
- select_number = gets.to_i
- random_number =rand(3)
- directions = ["上","下","左","右"]
-  puts "あなた：#{directions[select_number]} 相手：#{directions[random_number]}"
-   if select_number == random_number
-    true
-   else
-    false
-   end
-end
-   
- #最初のじゃんけんであいこの場合
-if number == computer
-   loop do
-    puts "[0]グー [1]チョキ [2]パー"
-        
-    number = gets.to_i
-    computer = rand(3)
-        
-    janken = ["グー","チョキ","パー"]
-    puts "自分:#{janken[number]} 相手:#{janken[computer]}"
-    puts "--------------------------"
-      
-      
-   if number == 0 && computer == 1 ||
-      number == 1 && computer == 2 ||
-      number == 2 && computer == 0
-      puts "勝利！！　あっちむいて〜・・・ホイ！！"
-      next if acchimuitehoi
-    else 
-      puts "負け〜 あっちむいて〜・・・ホイ！！"
-      next if acchimuitehoi
-    end
-   end
-   
-      #勝敗がついたらループを終わらせる。(nextタグ)
-   
+
+def janken_rule
+ jankenResult = JankenResult()
+ if jankenResult == 2
+   puts "あいこで.."
+   return false
  end
 
-#最終判定
-if janken
- puts "あなたの勝ちです"
-else
- puts "あなたの負けです"
+ if !acchimutei_hoi()
+   puts "じゃんけんからやり直し！！最初はグー！！"
+   return false
+ end
+
+ if jankenResult == 1
+   puts "勝ちました！"
+ else
+   puts "負けました・・・"
+ end
+ return true
 end
+ #じゃんけん 
+def JankenResult
+ puts "じゃんけん..."
+ choices = ["グー", "チョキ", "パー"]
+ ShowStartMessage(choices)
+
+ player_hand = gets.to_i
+ program_hand = rand(choices.size)
+ ShowChoiceInfo(choices[player_hand], choices[program_hand])
+
+ result = 0 #負け :0, 勝ち:1, あいこ:2
+ if player_hand == program_hand
+   result = 2
+ elsif ((player_hand == 0 && program_hand == 1) || (player_hand == 1 && program_hand == 2) || (player_hand == 2 && program_hand == 0))
+   result = 1
+ end
+ return result
+end
+ #あっち向いてホイ 
+def acchimutei_hoi
+ puts "あっち向いて〜"
+ choices = ["上", "下", "左", "右"]
+ ShowStartMessage(choices)
+
+ player_direction = gets.to_i
+ program_direction = rand(choices.size)
+ ShowChoiceInfo(choices[player_direction], choices[program_direction])
+
+ return (player_direction == program_direction)
+end
+
+def ShowStartMessage(choices)
+ numChoices = choices.size
+ for i in 0..(numChoices-1) do
+   puts i.to_s + "(" + choices[i] + ")"
+ end
+end
+
+def ShowChoiceInfo(playerChoiceString, programChoiceString)
+ puts "ホイ！"
+ separator = "------------------------"
+ puts separator
+ puts "あなた：#{playerChoiceString}"
+ puts "相手：#{programChoiceString}"
+ puts separator
+end
+
+all_game()
+
+
